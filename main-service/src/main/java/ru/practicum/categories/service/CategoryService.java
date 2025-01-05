@@ -10,6 +10,7 @@ public interface CategoryService {
     List<CategoryDto> getAllCategories(Integer from, Integer size);
 
     CategoryDto getCategoryById(Long id) throws NotFoundException;
+
     CategoryDto addCategory(NewCategoryDto newCategoryDto);
 
     CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) throws NotFoundException;
