@@ -11,11 +11,19 @@ import ru.practicum.model.EndpointHit;
 public class EndpointHitMapper {
     public static EndpointHit toHitEntity(EndpointHitDto hitDto) {
         return new EndpointHit(
-                hitDto.getId(),
                 hitDto.getApp(),
                 hitDto.getUri(),
                 hitDto.getIp(),
                 hitDto.getTimestamp()
+        );
+    }
+
+    public static EndpointHitDto toEndpointHitDto(EndpointHit hit) {
+        return new EndpointHitDto(
+                hit.getApp(),
+                hit.getUri(),
+                hit.getIp(),
+                hit.getTimestamp()
         );
     }
 }

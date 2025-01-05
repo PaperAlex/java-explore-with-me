@@ -3,6 +3,7 @@ package ru.practicum.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHitDto;
 import ru.practicum.service.StatsService;
@@ -26,7 +27,8 @@ public class StatsController {
     }
 
     @PostMapping("/hit")
-    public void save(@RequestBody @Valid EndpointHitDto hitDto) {
-        statsService.save(hitDto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public EndpointHitDto save(@RequestBody @Valid EndpointHitDto hitDto) {
+        return statsService.save(hitDto);
     }
 }
