@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addUser(UserNewDto userNewDto) {
-        log.info("addUser сохранили нового пользователя");
+        log.info("Запрос POST / /admin/users /, addUser добавление нового пользователя");
         return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userNewDto)));
     }
 
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
             log.info("getUsers получили информацию обоо всех пользователях");
             return userRepository.findAll(pageable).map(UserMapper::toUserDto).getContent();
         } else {
-            log.info("getUsers получили информацию о конкретных пользователях {}", userIds);
+            log.info("Запрос GET /admin/users /,getUsers получение информации о пользователях {}", userIds);
             return userRepository.findAllByIdIn(userIds, pageable).stream()
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id=" + userId + " was not found");
         }
-        log.info("deleteUser удалили пользователя {}", userId);
+        log.info("Запрос DELETE /admin/users/{userId} /, deleteUser удалить пользователя {}", userId);
         userRepository.deleteById(userId);
     }
 }

@@ -21,7 +21,6 @@ public class CompilationAdminController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
-        log.info("Запрос POST /admin/compilations / add сохранить подборку: \"{}\"", newCompilationDto.getTitle());
         return compilationService.addCompilation(newCompilationDto);
     }
 
@@ -29,15 +28,12 @@ public class CompilationAdminController {
     public CompilationDto updateCompilation(@PathVariable Long compilationId,
                                             @RequestBody @Valid UpdateCompilationRequest updateCompilation)
             throws NotFoundException {
-        log.info("Запрос PATCH /admin/compilations/{compilationId} / update обновить подборку: \"{}\"",
-                updateCompilation.getTitle());
         return compilationService.updateCompilation(compilationId, updateCompilation);
     }
 
     @DeleteMapping("/{compilationId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable long compilationId) throws NotFoundException {
-        log.info("Запрос DELETE /admin/compilations/{compilationId} / delete удалить подборку {}", compilationId);
         compilationService.deleteCompilation(compilationId);
     }
 }

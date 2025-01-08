@@ -67,7 +67,8 @@ public class RequestServiceImpl implements RequestService {
         } else {
             request.setStatus(CONFIRMED);
         }
-        log.info("addRequest добавили запрос");
+        log.info("Запрос POST / /users/{userId}/requests /, addRequest добавление запроса от пользователя {} на участие в событие {}",
+                userId, eventId);
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 
@@ -105,7 +106,8 @@ public class RequestServiceImpl implements RequestService {
                 rejected.add(RequestMapper.toRequestDto(request));
             }
         }
-        log.info("updateRequestsStatus изменили статус заявки");
+        log.info("Запрос PATCH / /users/{userId}/events/{eventId}/requests /, " +
+                "updateRequestsStatus изменение статуса заявок на участие в событие");
         return new EventRequestStatusUpdateResult(confirmed, rejected);
     }
 
@@ -114,7 +116,8 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto cancelRequest(Long userId, Long requestId) {
         Request request = requestRepository.findByIdAndRequesterId(requestId, userId);
         request.setStatus(RequestStatus.CANCELED);
-        log.info("cancelRequest пользователь отменил свой запрос");
+        log.info("Запрос PATCH / /users/{userId}/requests/{requestId}/cancel /, cancelRequest отмена своего завпроса, пользователь {}," +
+                " на участие в событие", userId);
         return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 
@@ -124,7 +127,8 @@ public class RequestServiceImpl implements RequestService {
         getUser(userId);
         eventRepository.findByIdAndInitiatorId(eventId, userId).orElseThrow(() ->
                 new NotFoundException("Event with id=" + eventId + " was not found"));
-        log.info("getRequestsByEventOwner получили информации о запросах на участие");
+        log.info("Запрос GET / /users/{userId}/events/{eventId}/requests /, getRequestsByEventOwner получение информации о запросах на участие" +
+                " в событии текущего пользователя {}", userId);
         return requestRepository.findAllByEventId(eventId).stream()
                 .map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }
@@ -133,7 +137,8 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<RequestDto> getRequestsByUser(Long userId) throws NotFoundException {
         getUser(userId);
-        log.info("getRequestsByUser получили информации о заявках текущего пользователя");
+        log.info("Запрос GET / /users/{userId}/requests /, getRequestsByUser получение информации о заявках текущего пользователя {}, " +
+                "на участие в чужих событиях", userId);
         return requestRepository.findAllByRequesterId(userId).stream()
                 .map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }

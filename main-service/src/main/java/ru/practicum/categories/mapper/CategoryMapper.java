@@ -2,12 +2,10 @@ package ru.practicum.categories.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.NewCategoryDto;
 import ru.practicum.categories.model.Category;
 
-@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryMapper {
     public static Category toCategory(NewCategoryDto newCategoryDto) {

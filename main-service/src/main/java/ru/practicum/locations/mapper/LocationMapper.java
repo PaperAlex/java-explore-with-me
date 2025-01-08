@@ -2,11 +2,9 @@ package ru.practicum.locations.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import ru.practicum.locations.dto.LocationDto;
 import ru.practicum.locations.model.Location;
 
-@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LocationMapper {
     public static Location toLocation(LocationDto locationDto) {

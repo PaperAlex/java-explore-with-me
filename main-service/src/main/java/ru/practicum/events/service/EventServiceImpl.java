@@ -81,7 +81,8 @@ public class EventServiceImpl implements EventService {
         event.setLocation(location);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(PENDING);
-        log.info("addEvent сохраняем событие" + event);
+        log.info("Запрос POST / /users/{userId}/events /,addEvent добавление пользователем {}" +
+                " нового события {}", userId, eventNewDto);
         return EventMapper.toEventFullDto(eventRepository.save(event), 0L);
     }
 
@@ -135,7 +136,8 @@ public class EventServiceImpl implements EventService {
                 event.get().setState(State.CANCELED);
             }
         }
-        log.info("updateEventByOwner изменение события добавленного пользователем" + event);
+        log.info("Запрос PATCH / /users/{userId}/events/{eventId} /, updateEventByOwner изменение события {} " +
+                "добавленного текущим пользователем {}", event, userId);
         return EventMapper.toEventFullDto(eventRepository.save(event.get()),
                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -191,7 +193,7 @@ public class EventServiceImpl implements EventService {
         if (title != null && !title.isBlank()) {
             event.setTitle(title);
         }
-        log.info("updateEventByAdmin обновление данных события {}", event);
+        log.info("PATCH / /admin/events/{eventId} /, updateEventByAdmin обновление данных события {}", event);
         return EventMapper.toEventFullDto(eventRepository.save(event),
                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -204,7 +206,8 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
                 .stream()
                 .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
-        log.info("getEventsByOwner получение иформации о событиях от пользователя");
+        log.info("Запрос GET / /users/{userId}/events /, getEventsByOwner получение событий добавленных текущим" +
+                " пользователем {}", userId);
         return events.stream()
                 .map(event -> EventMapper.toEventShortDto(event, confirmedRequests.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
@@ -214,7 +217,8 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public EventFullDto getEventByOwner(Long userId, Long eventId) throws NotFoundException {
         getEvent(eventId);
-        log.info("getEventByOwner получение иформации о событии {} от пользователя", eventId);
+        log.info("Запрос GET / /users/{userId}/events/{eventId} /, getEventByOwner получение информации о" +
+                " событие {} добавленом текущим пользователем {}", eventId, userId);
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         return EventMapper.toEventFullDto(event.get(), requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -273,7 +277,7 @@ public class EventServiceImpl implements EventService {
                         confirmedRequests.getOrDefault(event.getId(), 0L)));
             }
         }
-        log.info("getEventsByAdminParams поиск событий с параметрами");
+        log.info("Запрос GET / /admin/events /, getEventsByAdminParams с параметрами");
         return result;
     }
 
@@ -353,8 +357,7 @@ public class EventServiceImpl implements EventService {
         EndpointHitDto hit = new EndpointHitDto(app, request.getRequestURI(), request.getRemoteAddr(),
                 LocalDateTime.now());
         statsClient.save(hit);
-
-        log.info("getEvents получаем события");
+        log.info("Запрос GET / /events /, getEvents получение событий с возможностью фильтрации");
         return result;
     }
 
@@ -381,7 +384,7 @@ public class EventServiceImpl implements EventService {
         EndpointHitDto hit = new EndpointHitDto(app, request.getRequestURI(), request.getRemoteAddr(),
                 LocalDateTime.now());
         statsClient.save(hit);
-        log.info("getEventById получам событие id: {} ", eventId);
+        log.info("Запрос GET / /events/{eventId} /, getEventById получам событие id: {} ", eventId);
         return result;
     }
 

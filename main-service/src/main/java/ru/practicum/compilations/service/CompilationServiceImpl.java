@@ -71,8 +71,7 @@ public class CompilationServiceImpl implements CompilationService {
                     return compilationDto;
                 })
                 .collect(Collectors.toList());
-
-        log.info("getCompilations получаем данные о подборках событий");
+        log.info("Запрос GET /compilations, getCompilations получение подборок событий");
         return result;
     }
 
@@ -90,7 +89,8 @@ public class CompilationServiceImpl implements CompilationService {
                     .map(event -> EventMapper.toEventShortDto(event, confirmedRequests.get(event.getId())))
                     .collect(Collectors.toList()));
         }
-        log.info("getCompilationById: получаем данные у подборке {}", compilationDto.getId());
+        log.info("Запрос GET /compilations/{compilationId} /, getCompilationById получение подборки событий {}",
+                compilationDto.getId());
         return compilationDto;
     }
 
@@ -99,7 +99,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = CompilationMapper.toCompilationEntity(newCompilationDto);
         setEvents(compilation, newCompilationDto.getEvents());
-        log.info("addCompilation: сохраняем подбоку {}", compilation);
+        log.info("Запрос POST /admin/compilations /, addCompilation сохранить подборку: \"{}\"", newCompilationDto.getTitle());
         return setCompilationDto(compilation);
     }
 
@@ -123,7 +123,8 @@ public class CompilationServiceImpl implements CompilationService {
         if (title != null && !title.isBlank()) {
             compilation.setTitle(title);
         }
-        log.info("updateCompilation: обновляем подборку {}", compilation);
+        log.info("Запрос PATCH /admin/compilations/{compilationId} /, updateCompilation обновляем подборку: {}",
+                updateCompilation.getTitle());
         return setCompilationDto(compilation);
     }
 
@@ -131,7 +132,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public void deleteCompilation(Long compilationId) throws NotFoundException {
         getCompilation(compilationId);
-        log.info("deleteCompilation: удаляем подборку {}", compilationId);
+        log.info("Запрос DELETE /admin/compilations/{compilationId} /, deleteCompilation удаляем подборку {}", compilationId);
         compilationRepository.deleteById(compilationId);
     }
 

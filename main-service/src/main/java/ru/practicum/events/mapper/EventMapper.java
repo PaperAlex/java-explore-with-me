@@ -2,14 +2,13 @@ package ru.practicum.events.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import ru.practicum.categories.mapper.CategoryMapper;
 import ru.practicum.events.dto.*;
 import ru.practicum.events.model.Event;
 import ru.practicum.locations.mapper.LocationMapper;
 import ru.practicum.users.mapper.UserMapper;
 
-@Component
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
     public static Event toEvent(EventNewDto eventNewDto) {

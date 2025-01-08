@@ -26,7 +26,6 @@ public class UserController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserDto addUser(@RequestBody @Valid UserNewDto userNewDto) {
-        log.info("Запрос POST / /admin/users / добавление нового пользователя");
         return userService.addUser(userNewDto);
     }
 
@@ -34,14 +33,12 @@ public class UserController {
     public List<UserDto> getUsers(@RequestParam(value = "ids", required = false) List<Long> ids,
                                   @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
                                   @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
-        log.info("Запрос GET /admin/users / получение информации о пользователях");
         return userService.getUsers(ids, from, size);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) throws NotFoundException {
-        log.info("Запрос DELETE /admin/users/{userId} / удалить пользователя {}", userId);
         userService.deleteUser(userId);
     }
 }

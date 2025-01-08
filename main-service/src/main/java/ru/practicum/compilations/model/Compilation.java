@@ -24,13 +24,13 @@ public class Compilation {
     private String title;
 
     @Column(name = "pinned", nullable = false)
-    Boolean pinned;
+    private Boolean pinned;
 
     @ManyToMany
     @JoinTable(name = "compilation_event",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    Set<Event> events;
+    private Set<Event> events;
 
     public Compilation(String title, Boolean pinned) {
         this.title = title;

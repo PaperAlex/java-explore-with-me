@@ -22,20 +22,17 @@ public class CategoriesAdminController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public CategoryDto addCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
-        log.info("Запрос POST / admin/categories / add сохранить категорию: \"{}\"", newCategoryDto.getName());
         return categoryService.addCategory(newCategoryDto);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable Long catId, @RequestBody @Valid CategoryDto categoryDto) throws NotFoundException {
-        log.info("Запрос PATCH / admin/categories / update обновить категорию: \"{}\"", categoryDto.getName());
         return categoryService.updateCategory(catId, categoryDto);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long catId) throws NotFoundException {
-        log.info("Запрос DELETE / admin/categories / delete: {}", catId);
         categoryService.deleteCategory(catId);
     }
 }

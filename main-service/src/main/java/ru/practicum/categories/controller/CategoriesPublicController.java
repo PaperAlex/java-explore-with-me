@@ -24,13 +24,11 @@ public class CategoriesPublicController {
     public List<CategoryDto> getAll(
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
-        log.info("Запрос GET /categories / getAll категории, параментры: from = {}, size = {}", from, size);
         return categoryService.getAllCategories(from, size);
     }
 
     @GetMapping("/{categoryId}")
     public CategoryDto getById(@PathVariable Long categoryId) throws NotFoundException {
-        log.info("Запрос GET /categories / getById категории {}", categoryId);
         return categoryService.getCategoryById(categoryId);
     }
 }

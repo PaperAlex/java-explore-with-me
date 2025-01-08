@@ -24,13 +24,11 @@ public class CompilationPublicController {
     public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
                                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                                 @RequestParam(defaultValue = "10") @Positive Integer size) {
-        log.info("Запрос GET /compilations получение подборок событий");
         return compilationService.getCompilations(pinned, from, size);
     }
 
     @GetMapping("/{compilationId}")
     public CompilationDto getCompilationById(@PathVariable Long compilationId) throws NotFoundException {
-        log.info("Запрос GET /compilations/{compilationId} / получение подборки событий {}", compilationId);
         return compilationService.getCompilationById(compilationId);
     }
 }
