@@ -1,23 +1,17 @@
 package ru.practicum.exception;
 
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@Builder
 public class ErrorResponse {
-    String error;
-    String description;
-
-    public ErrorResponse(String error, String description) {
-        this.error = error;
-        this.description = description;
-    }
-
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+    private final List<String> errors;
+    private final String message;
+    private final String reason;
+    private final String status;
+    private final LocalDateTime timestamp;
 }
