@@ -8,6 +8,7 @@ import ru.practicum.EndpointHitDto;
 import ru.practicum.ViewStatsDto;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.mapper.EndpointHitMapper;
+import ru.practicum.model.EndpointHit;
 import ru.practicum.repository.StatsRepository;
 
 import java.time.LocalDateTime;
@@ -21,9 +22,10 @@ public class StatsServiceImpl implements StatsService {
 
     @Transactional
     @Override
-    public void save(EndpointHitDto hitDto) {
+    public EndpointHitDto save(EndpointHitDto hitDto) {
         log.info("Сохраняем: {}", hitDto);
-        statsRepository.save(EndpointHitMapper.toHitEntity(hitDto));
+        EndpointHit endpointHit = statsRepository.save(EndpointHitMapper.toHitEntity(hitDto));
+        return EndpointHitMapper.toEndpointHitDto(endpointHit);
     }
 
     @Transactional(readOnly = true)

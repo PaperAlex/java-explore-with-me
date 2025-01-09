@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.configuration;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
