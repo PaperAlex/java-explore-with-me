@@ -81,8 +81,7 @@ public class EventServiceImpl implements EventService {
         event.setLocation(location);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(PENDING);
-        log.info("Запрос POST / /users/{userId}/events /,addEvent добавление пользователем {}" +
-                " нового события {}", userId, eventNewDto);
+        log.info("addEvent добавление пользователем {} нового события {}", userId, eventNewDto);
         return EventMapper.toEventFullDto(eventRepository.save(event), 0L);
     }
 
@@ -136,8 +135,7 @@ public class EventServiceImpl implements EventService {
                 event.get().setState(State.CANCELED);
             }
         }
-        log.info("Запрос PATCH / /users/{userId}/events/{eventId} /, updateEventByOwner изменение события {} " +
-                "добавленного текущим пользователем {}", event, userId);
+        log.info("updateEventByOwner изменение события {} добавленного текущим пользователем {}", event, userId);
         return EventMapper.toEventFullDto(eventRepository.save(event.get()),
                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -193,7 +191,7 @@ public class EventServiceImpl implements EventService {
         if (title != null && !title.isBlank()) {
             event.setTitle(title);
         }
-        log.info("PATCH / /admin/events/{eventId} /, updateEventByAdmin обновление данных события {}", event);
+        log.info("updateEventByAdmin обновление данных события {}", event);
         return EventMapper.toEventFullDto(eventRepository.save(event),
                 requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -206,8 +204,7 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(ids, CONFIRMED)
                 .stream()
                 .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
-        log.info("Запрос GET / /users/{userId}/events /, getEventsByOwner получение событий добавленных текущим" +
-                " пользователем {}", userId);
+        log.info("getEventsByOwner получение событий добавленных текущим пользователем {}", userId);
         return events.stream()
                 .map(event -> EventMapper.toEventShortDto(event, confirmedRequests.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
@@ -217,8 +214,7 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public EventFullDto getEventByOwner(Long userId, Long eventId) throws NotFoundException {
         getEvent(eventId);
-        log.info("Запрос GET / /users/{userId}/events/{eventId} /, getEventByOwner получение информации о" +
-                " событие {} добавленом текущим пользователем {}", eventId, userId);
+        log.info("getEventByOwner получение информации о событие {} добавленом текущим пользователем {}", eventId, userId);
         Optional<Event> event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         return EventMapper.toEventFullDto(event.get(), requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
     }
@@ -277,7 +273,7 @@ public class EventServiceImpl implements EventService {
                         confirmedRequests.getOrDefault(event.getId(), 0L)));
             }
         }
-        log.info("Запрос GET / /admin/events /, getEventsByAdminParams с параметрами");
+        log.info("getEventsByAdminParams получение событий с параметрами");
         return result;
     }
 
@@ -357,7 +353,7 @@ public class EventServiceImpl implements EventService {
         EndpointHitDto hit = new EndpointHitDto(app, request.getRequestURI(), request.getRemoteAddr(),
                 LocalDateTime.now());
         statsClient.save(hit);
-        log.info("Запрос GET / /events /, getEvents получение событий с возможностью фильтрации");
+        log.info("getEvents получение событий с возможностью фильтрации");
         return result;
     }
 
@@ -384,7 +380,7 @@ public class EventServiceImpl implements EventService {
         EndpointHitDto hit = new EndpointHitDto(app, request.getRequestURI(), request.getRemoteAddr(),
                 LocalDateTime.now());
         statsClient.save(hit);
-        log.info("Запрос GET / /events/{eventId} /, getEventById получам событие id: {} ", eventId);
+        log.info("getEventById получам событие id: {} ", eventId);
         return result;
     }
 

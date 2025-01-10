@@ -71,7 +71,7 @@ public class CompilationServiceImpl implements CompilationService {
                     return compilationDto;
                 })
                 .collect(Collectors.toList());
-        log.info("Запрос GET /compilations, getCompilations получение подборок событий");
+        log.info("getCompilations Получаем подборку событий");
         return result;
     }
 
@@ -89,8 +89,7 @@ public class CompilationServiceImpl implements CompilationService {
                     .map(event -> EventMapper.toEventShortDto(event, confirmedRequests.get(event.getId())))
                     .collect(Collectors.toList()));
         }
-        log.info("Запрос GET /compilations/{compilationId} /, getCompilationById получение подборки событий {}",
-                compilationDto.getId());
+        log.info("getCompilationById Получаем подборки событий id={}", compilationDto.getId());
         return compilationDto;
     }
 
@@ -99,7 +98,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = CompilationMapper.toCompilationEntity(newCompilationDto);
         setEvents(compilation, newCompilationDto.getEvents());
-        log.info("Запрос POST /admin/compilations /, addCompilation сохранить подборку: \"{}\"", newCompilationDto.getTitle());
+        log.info("addCompilation Сохраняем подборку: \"{}\"", newCompilationDto.getTitle());
         return setCompilationDto(compilation);
     }
 
@@ -123,8 +122,7 @@ public class CompilationServiceImpl implements CompilationService {
         if (title != null && !title.isBlank()) {
             compilation.setTitle(title);
         }
-        log.info("Запрос PATCH /admin/compilations/{compilationId} /, updateCompilation обновляем подборку: {}",
-                updateCompilation.getTitle());
+        log.info("updateCompilation обновляем подборку: {}", updateCompilation.getTitle());
         return setCompilationDto(compilation);
     }
 
