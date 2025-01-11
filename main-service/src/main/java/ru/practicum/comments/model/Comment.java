@@ -36,4 +36,7 @@ public class Comment {
     private LocalDateTime created;
 
     private LocalDateTime edited;
+
+    @Column(name = "confirmed_requests", nullable = false)
+    private Long confirmedRequests;
 }

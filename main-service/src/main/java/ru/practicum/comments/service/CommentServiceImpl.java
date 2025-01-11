@@ -18,7 +18,6 @@ import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.exceptions.BadRequestException;
 import ru.practicum.exceptions.NotFoundException;
 import ru.practicum.requests.repository.RequestRepository;
-import ru.practicum.requests.dto.ConfirmedRequests;
 import ru.practicum.users.model.User;
 import ru.practicum.users.mapper.UserMapper;
 import ru.practicum.users.repository.UserRepository;
@@ -27,7 +26,6 @@ import ru.practicum.users.dto.UserShortDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.practicum.events.enums.State.PUBLISHED;
@@ -37,7 +35,6 @@ import static ru.practicum.requests.enums.RequestStatus.CONFIRMED;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -71,21 +68,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(Long userId, Long eventId, CommentNewDto commentNewDto) throws NotFoundException {
         User author = getUser(userId);
         Event event = getEvent(eventId);
         if (event.getState() != PUBLISHED) {
             throw new BadRequestException("Event must have status PUBLISH to comment.");
         }
-        Comment comment = commentRepository.save(CommentMapper.toComment(commentNewDto, author, event));
         UserShortDto userShort = UserMapper.toUserShortDto(author);
-        EventShortDto eventShort = EventMapper.toEventShortDto(event,
-                requestRepository.countByEventIdAndStatus(eventId, CONFIRMED));
+        Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId, CONFIRMED);
+        EventShortDto eventShort = EventMapper.toEventShortDto(event, confirmedRequests);
+        Comment comment = commentRepository.save(CommentMapper.toComment(commentNewDto, author, event, confirmedRequests));
         log.info("Добавляем комментарий от пользователя: userId={}, eventId={}, comment={}", userId, eventId, commentNewDto);
         return CommentMapper.toCommentDto(comment, userShort, eventShort);
     }
 
     @Override
+    @Transactional
     public CommentDto updateComment(Long userId, Long eventId, Long commentId, CommentNewDto commentNewDto) throws NotFoundException {
         User author = getUser(userId);
         Event event = getEvent(eventId);
@@ -107,16 +106,13 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByUser(Long userId, Integer from, Integer size) throws NotFoundException {
         User author = getUser(userId);
-        List<Comment> comments = commentRepository.findAllByAuthorId(userId, PageRequest.of(from / size, size));
-        List<Long> eventIds = comments.stream().map(comment -> comment.getEvent().getId()).collect(Collectors.toList());
-        Map<Long, Long> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(eventIds, CONFIRMED)
-                .stream()
-                .collect(Collectors.toMap(ConfirmedRequests::getEvent, ConfirmedRequests::getCount));
+        List<Comment> comments =
+                commentRepository.findAllByAuthorId(
+                        userId, PageRequest.of(from / size, size));
         UserShortDto userShort = UserMapper.toUserShortDto(author);
         List<CommentDto> result = new ArrayList<>();
         for (Comment c : comments) {
-            Long eventId  = c.getEvent().getId();
-            EventShortDto eventShort = EventMapper.toEventShortDto(c.getEvent(), confirmedRequests.get(eventId));
+            EventShortDto eventShort = EventMapper.toEventShortDto(c.getEvent(), c.getConfirmedRequests());
             result.add(CommentMapper.toCommentDto(c, userShort, eventShort));
         }
         log.info("Получение информации о комментариях пользователя userId={} " +
@@ -125,6 +121,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long userId, Long commentId) throws NotFoundException {
         User author = getUser(userId);
         Comment comment = getComment(commentId);
@@ -136,6 +133,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long commentId) throws NotFoundException {
         getComment(commentId);
         log.info("Удаляем комментарий: commentId={}", commentId);

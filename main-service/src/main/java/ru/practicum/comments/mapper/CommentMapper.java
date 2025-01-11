@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
-    public static Comment toComment(CommentNewDto commentNewDto, User author, Event event) {
+    public static Comment toComment(CommentNewDto commentNewDto, User author, Event event, Long confirmedRequests) {
         Comment comment = new Comment();
         comment.setAuthor(author);
         comment.setEvent(event);
         comment.setText(commentNewDto.getText());
         comment.setCreated(LocalDateTime.now());
+        comment.setConfirmedRequests(confirmedRequests);
         return comment;
     }
 

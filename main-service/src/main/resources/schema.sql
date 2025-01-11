@@ -67,5 +67,6 @@ CREATE TABLE IF NOT EXISTS comments (
     author_id BIGINT REFERENCES users(id) NOT NULL,
     event_id  BIGINT REFERENCES events(id) NOT NULL,
     created   TIMESTAMP NOT NULL,
-    edited    TIMESTAMP
+    edited    TIMESTAMP,
+    confirmed_requests BIGINT
 );
